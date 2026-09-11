@@ -32,16 +32,11 @@ def seed_database():
     Data is inserted only if the tables are empty.
     """
 
-    # Import here to avoid circular imports
     import models
 
     db = SessionLocal()
 
     try:
-
-        # --------------------------------------------------
-        # HOSPITALS
-        # --------------------------------------------------
 
         hospital_count = db.query(models.Hospital).count()
 
@@ -80,11 +75,6 @@ def seed_database():
 
             db.add_all(hospitals)
 
-
-        # --------------------------------------------------
-        # SHELTERS
-        # --------------------------------------------------
-
         shelter_count = db.query(models.Shelter).count()
 
         if shelter_count == 0:
@@ -121,11 +111,6 @@ def seed_database():
             ]
 
             db.add_all(shelters)
-
-
-        # --------------------------------------------------
-        # RESOURCES
-        # --------------------------------------------------
 
         resource_count = db.query(models.Resource).count()
 
@@ -193,11 +178,6 @@ def seed_database():
 
             db.add_all(resources)
 
-
-        # --------------------------------------------------
-        # INCIDENTS
-        # --------------------------------------------------
-
         incident_count = db.query(models.Incident).count()
 
         if incident_count == 0:
@@ -238,8 +218,6 @@ def seed_database():
 
             db.add_all(incidents)
 
-
-        # Save everything
         db.commit()
 
         print("======================================")
