@@ -10,21 +10,12 @@ router = APIRouter(
 )
 
 
-# =========================================================
-# RESOURCE SCHEMA
-# =========================================================
-
 class ResourceCreate(BaseModel):
     type: str
     latitude: float
     longitude: float
     status: str = "available"
     quantity: int = 1
-
-
-# =========================================================
-# GET ALL RESOURCES
-# =========================================================
 
 @router.get("/")
 def get_resources():
@@ -49,10 +40,6 @@ def get_resources():
 
     return result
 
-
-# =========================================================
-# CREATE RESOURCE
-# =========================================================
 
 @router.post("/")
 def create_resource(resource_data: ResourceCreate):
@@ -85,10 +72,6 @@ def create_resource(resource_data: ResourceCreate):
     return result
 
 
-# =========================================================
-# GET ALL HOSPITALS
-# =========================================================
-
 @router.get("/hospitals")
 def get_hospitals():
 
@@ -113,10 +96,6 @@ def get_hospitals():
 
     return result
 
-
-# =========================================================
-# GET ALL SHELTERS
-# =========================================================
 
 @router.get("/shelters")
 def get_shelters():
