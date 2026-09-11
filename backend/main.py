@@ -11,24 +11,18 @@ from routes.simulation import router as simulation_router
 from routes.equity import router as equity_router
 
 
-# Create database tables
 Base.metadata.create_all(bind=engine)
 
-
-# Seed demo data
 from database import seed_database
 
 seed_database()
 
-
-# Create FastAPI application
 app = FastAPI(
     title="ResQAI Backend",
     version="1.0.0"
 )
 
 
-# Register API routers
 app.include_router(resources_router)
 app.include_router(incidents_router)
 app.include_router(allocation_router)
@@ -36,8 +30,6 @@ app.include_router(ai_router)
 app.include_router(simulation_router)
 app.include_router(equity_router)
 
-
-# Root endpoint
 @app.get("/")
 def root():
     return {
