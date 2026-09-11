@@ -9,17 +9,7 @@ router = APIRouter(
     tags=["Allocation"]
 )
 
-
-# ---------------------------------------------------------
-# ACTIVE ALLOCATION TRACKING
-# ---------------------------------------------------------
-
 active_allocations = {}
-
-
-# ---------------------------------------------------------
-# PARSE REQUIRED RESOURCES
-# ---------------------------------------------------------
 
 def parse_required_resources(raw):
     """
@@ -48,11 +38,6 @@ def parse_required_resources(raw):
         for item in str(raw).split(",")
         if item.strip()
     ]
-
-
-# ---------------------------------------------------------
-# DISTANCE CALCULATION
-# ---------------------------------------------------------
 
 def calculate_distance(lat1, lon1, lat2, lon2):
     """
@@ -84,11 +69,6 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 
     return R * c
 
-
-# ---------------------------------------------------------
-# SEVERITY SCORE
-# ---------------------------------------------------------
-
 def severity_score(severity):
     """
     Convert incident severity into a numerical score.
@@ -106,11 +86,6 @@ def severity_score(severity):
         25
     )
 
-
-# ---------------------------------------------------------
-# RESOURCE MATCHING
-# ---------------------------------------------------------
-
 def resource_match(resource_type, incident):
     """
     Check whether a resource matches the incident's needs.
@@ -125,11 +100,6 @@ def resource_match(resource_type, incident):
     ).lower()
 
     return resource_type in required
-
-
-# ---------------------------------------------------------
-# PRIORITY CALCULATION
-# ---------------------------------------------------------
 
 def calculate_incident_priority(incident):
     """
@@ -161,11 +131,6 @@ def calculate_incident_priority(incident):
         100
     )
 
-
-# ---------------------------------------------------------
-# REQUIRED RESOURCE QUANTITIES
-# ---------------------------------------------------------
-
 def calculate_required_quantities(incident):
     """
     Estimate how many resources are required.
@@ -177,8 +142,6 @@ def calculate_required_quantities(incident):
 
     quantities = {}
 
-    # Ambulance:
-    # approximately one ambulance per 4 injured people
     if "ambulance" in required:
 
         quantities["ambulance"] = max(
@@ -188,8 +151,6 @@ def calculate_required_quantities(incident):
             )
         )
 
-    # Rescue team:
-    # approximately one team per 25 affected people
     if "rescue_team" in required:
 
         quantities["rescue_team"] = max(
@@ -199,8 +160,6 @@ def calculate_required_quantities(incident):
             )
         )
 
-    # Medicine:
-    # approximately 5 units per injured person
     if "medicine" in required:
 
         quantities["medicine"] = max(
@@ -208,8 +167,6 @@ def calculate_required_quantities(incident):
             incident.injured * 5
         )
 
-    # Food:
-    # approximately 2 units per affected person
     if "food" in required:
 
         quantities["food"] = max(
@@ -217,8 +174,6 @@ def calculate_required_quantities(incident):
             incident.people_affected * 2
         )
 
-    # Water:
-    # approximately 2 units per affected person
     if "water" in required:
 
         quantities["water"] = max(
@@ -227,11 +182,6 @@ def calculate_required_quantities(incident):
         )
 
     return quantities
-
-
-# ---------------------------------------------------------
-# GET RESOURCE RECOMMENDATIONS
-# ---------------------------------------------------------
 
 @router.get("/{incident_id}")
 def allocate_resources(incident_id: int):
@@ -286,7 +236,6 @@ def allocate_resources(incident_id: int):
             incident
         )
 
-        # Higher score = better match
         distance_penalty = distance * 5
 
         match_bonus = (
@@ -319,8 +268,6 @@ def allocate_resources(incident_id: int):
             }
         )
 
-    # Matched resources first,
-    # then nearest resources
     recommendations.sort(
         key=lambda x: (
             not x["matched_need"],
@@ -340,10 +287,6 @@ def allocate_resources(incident_id: int):
         "recommended_resources": recommendations
     }
 
-
-# ---------------------------------------------------------
-# DEPLOY RESOURCES
-# ---------------------------------------------------------
 
 @router.post("/{incident_id}/deploy")
 def deploy_resources(incident_id: int):
@@ -366,7 +309,6 @@ def deploy_resources(incident_id: int):
             "error": "Incident not found"
         }
 
-    # Get currently available resources
     resources = (
         db.query(models.Resource)
         .filter(
@@ -388,15 +330,11 @@ def deploy_resources(incident_id: int):
     allocated = []
     shortages = []
 
-    # Keep track of allocated IDs
     incident_allocations = active_allocations.get(
         incident.id,
         []
     )
 
-    # -----------------------------------------------------
-    # Allocate each required resource type
-    # -----------------------------------------------------
 
     for resource_type, needed in required_quantities.items():
 
@@ -424,7 +362,6 @@ def deploy_resources(incident_id: int):
                 )
             )
 
-        # Nearest resource first
         candidates.sort(
             key=lambda x: x[0]
         )
@@ -436,7 +373,6 @@ def deploy_resources(incident_id: int):
             if allocated_quantity >= needed:
                 break
 
-            # Deploy resource
             resource.status = "deployed"
 
             allocated_quantity += (
@@ -460,7 +396,6 @@ def deploy_resources(incident_id: int):
                 }
             )
 
-        # Calculate shortage
         shortage = max(
             0,
             needed - allocated_quantity
@@ -477,12 +412,10 @@ def deploy_resources(incident_id: int):
                 }
             )
 
-    # Save allocation tracking
     active_allocations[
         incident.id
     ] = incident_allocations
 
-    # Save resource status changes
     db.commit()
 
     result = {
