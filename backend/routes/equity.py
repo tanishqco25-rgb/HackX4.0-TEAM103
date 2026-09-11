@@ -18,7 +18,6 @@ def get_equity():
 
     db.close()
 
-    # Demo disaster zones
     zones = {
         "Zone A": {
             "min_lat": 26.90,
@@ -61,7 +60,6 @@ def get_equity():
             ):
                 zone_incidents.append(incident)
 
-        # Calculate disaster need
         need_score = 0
 
         for incident in zone_incidents:
@@ -82,7 +80,6 @@ def get_equity():
                 + incident.injured * 2
             )
 
-        # Count usable resources in zone
         zone_resources = 0
 
         for resource in resources:
@@ -95,7 +92,6 @@ def get_equity():
                 if resource.status != "unavailable":
                     zone_resources += 1
 
-        # Calculate coverage
         if need_score == 0:
             coverage = 100
         else:
@@ -104,7 +100,6 @@ def get_equity():
                 round((zone_resources * 20 / need_score) * 100)
             )
 
-        # Determine service status
         if coverage >= 75:
 
             status = "well_served"
@@ -145,7 +140,6 @@ def get_equity():
             "recommendation": recommendation
         })
 
-    # Show least-served zones first
     results.sort(
         key=lambda x: x["coverage_percent"]
     )
