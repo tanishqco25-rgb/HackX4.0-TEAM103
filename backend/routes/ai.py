@@ -16,9 +16,6 @@ def analyze_report(report: str):
 
     text = report.lower()
 
-    # -----------------------------
-    # 1. Extract people affected
-    # -----------------------------
     people_affected = 0
 
     people_patterns = [
@@ -33,10 +30,7 @@ def analyze_report(report: str):
         if match:
             people_affected = int(match.group(1))
             break
-
-    # -----------------------------
-    # 2. Extract injured people
-    # -----------------------------
+            
     injured = 0
 
     injured_patterns = [
@@ -50,9 +44,6 @@ def analyze_report(report: str):
             injured = int(match.group(1))
             break
 
-    # -----------------------------
-    # 3. Detect severity
-    # -----------------------------
     severity = "medium"
 
     critical_words = [
@@ -85,9 +76,6 @@ def analyze_report(report: str):
     elif any(word in text for word in high_words):
         severity = "high"
 
-    # -----------------------------
-    # 4. Detect required resources
-    # -----------------------------
     resources = []
 
     if any(word in text for word in [
@@ -127,13 +115,8 @@ def analyze_report(report: str):
     ]):
         resources.append("food")
 
-    # -----------------------------
-    # 5. Calculate priority score
-    # -----------------------------
-
     priority = 30
 
-    # People affected
     if people_affected >= 100:
         priority += 25
     elif people_affected >= 50:
@@ -143,10 +126,10 @@ def analyze_report(report: str):
     elif people_affected > 0:
         priority += 5
 
-    # Injured
+ 
     priority += min(injured * 3, 20)
 
-    # Severity
+ 
     if severity == "critical":
         priority += 25
     elif severity == "high":
@@ -154,12 +137,7 @@ def analyze_report(report: str):
     else:
         priority += 5
 
-    # Limit to 100
     priority = min(priority, 100)
-
-    # -----------------------------
-    # 6. Resource quantities
-    # -----------------------------
 
     ambulances_required = 0
     rescue_teams_required = 0
