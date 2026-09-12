@@ -1,0 +1,4 @@
+import { Polyline, Popup } from "react-leaflet";
+
+function DeploymentRoute({ route, onSelect }) { const color = route.status === "AI Recommended" ? "#22d3ee" : route.status === "Active Route" ? "#34d399" : "#a78bfa"; return <Polyline positions={route.positions} pathOptions={{ color, weight: route.status === "AI Recommended" ? 5 : 3, dashArray: route.status === "Alternative Route" ? "7 7" : undefined, opacity: 0.9 }} eventHandlers={{ click: () => onSelect(route, "route") }}><Popup><strong>{route.status}</strong><br />{route.resource}: {route.from} → {route.to}<br />ETA: {route.eta}</Popup></Polyline>; }
+export default DeploymentRoute;

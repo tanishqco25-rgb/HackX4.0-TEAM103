@@ -1,0 +1,5 @@
+function ResourceImpact({ resources }) {
+  return <section className="rounded-md border border-slate-800 bg-[#111b24] p-4"><p className="text-[10px] font-bold tracking-[0.16em] text-orange-300">RESOURCE IMPACT</p><h2 className="mt-1 text-sm font-semibold text-slate-100">Projected capacity gaps</h2><div className="mt-4 grid grid-cols-2 gap-3">{resources.map((resource) => <article key={resource.name} className="rounded border border-slate-800/80 bg-slate-900/30 p-3"><p className="text-[10px] font-bold text-slate-400">{resource.name}</p><div className="mt-2 flex items-end justify-between"><span className="text-lg font-semibold text-slate-100">{resource.required}</span><span className={`text-xs font-bold ${resource.gap > 5 ? "text-red-300" : "text-orange-300"}`}>Gap {resource.gap}</span></div><div className="mt-2 flex justify-between text-[10px] text-slate-500"><span>Current {resource.current}</span><span>Required</span></div></article>)}</div></section>;
+}
+
+export default ResourceImpact;
