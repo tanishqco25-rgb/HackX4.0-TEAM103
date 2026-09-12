@@ -1,0 +1,14 @@
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
+import { allocationMapData } from "../../data/allocation";
+
+function marker(label, color) { return L.divIcon({ className: "custom-map-marker", html: `<span style="background:${color};box-shadow:0 0 0 3px ${color}33">${label}</span>`, iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -12] }); }
+
+function AllocationMap({ activeResourceId, activeIncidentId }) {
+  const resource = allocationMapData.resourcePositions.find((item) => item.id === activeResourceId) || allocationMapData.resourcePositions[0];
+  const incident = allocationMapData.incidentPositions.find((item) => item.id === activeIncidentId) || allocationMapData.incidentPositions[0];
+  return <section className="rounded-md border border-slate-800 bg-[#111b24] p-3"><div className="flex items-center justify-between px-1"><div><p className="text-[10px] font-bold tracking-[0.16em] text-cyan-400">ALLOCATION MAP</p><h2 className="mt-1 text-sm font-semibold text-slate-100">Recommended response route</h2></div><span className="text-[10px] text-cyan-300">{resource.id} → {incident.zone}</span></div><div className="relative mt-3 h-64 overflow-hidden rounded border border-slate-700/80"><MapContainer center={[28.618, 77.223]} zoom={13} scrollWheelZoom={false} className="h-full w-full"><TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{allocationMapData.blocked.map((line, index) => <Polyline key={`blocked-${index}`} positions={line} pathOptions={{ color: "#64748b", dashArray: "5 6", weight: 2 }} />)}{allocationMapData.recommendationRoutes.map((line, index) => <Polyline key={`route-${index}`} positions={line} pathOptions={{ color: index === 0 ? "#22d3ee" : "#334155", weight: index === 0 ? 4 : 2, opacity: index === 0 ? 1 : 0.55 }} />)}{allocationMapData.incidentPositions.map((item) => <Marker key={item.id} position={item.position} icon={marker("!", item.id === incident.id ? "#f87171" : "#fb923c")}><Popup>{item.id} · {item.zone}</Popup></Marker>)}{allocationMapData.resourcePositions.map((item) => <Marker key={item.id} position={item.position} icon={marker(item.id.slice(-2), item.id === resource.id ? "#22d3ee" : "#38bdf8")}><Popup>{item.id} · {item.type}</Popup></Marker>)}</MapContainer><div className="absolute bottom-2 left-2 z-1000 flex gap-3 rounded border border-slate-700/80 bg-[#0d151c]/95 px-2 py-1.5 text-[9px] text-slate-300"><span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-red-400" />Incident</span><span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-cyan-400" />Resource</span><span><i className="mr-1 inline-block h-0.5 w-3 bg-cyan-400" />Recommended route</span></div></div></section>;
+}
+
+export default AllocationMap;

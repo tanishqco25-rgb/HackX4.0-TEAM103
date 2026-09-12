@@ -1,0 +1,28 @@
+import { Download, FileText } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import AIImpact from "../components/analytics/AIImpact";
+import AnalyticsSummary from "../components/analytics/AnalyticsSummary";
+import DemandCapacity from "../components/analytics/DemandCapacity";
+import EfficiencyChart from "../components/analytics/EfficiencyChart";
+import IncidentPerformance from "../components/analytics/IncidentPerformance";
+import KeyInsights from "../components/analytics/KeyInsights";
+import ResourceUtilisation from "../components/analytics/ResourceUtilisation";
+import ResponseTrend from "../components/analytics/ResponseTrend";
+import ZonePerformance from "../components/analytics/ZonePerformance";
+import { analyticsRanges, insightTemplates } from "../data/analytics";
+
+function Analytics() {
+  const [range, setRange] = useState("Last 24 Hours");
+  const [selectedZone, setSelectedZone] = useState("Zone Alpha");
+  const [notice, setNotice] = useState("");
+  const data = analyticsRanges[range];
+  const insights = useMemo(() => insightTemplates.map((template) => template.replace("{coverage}", data.zones[0].coverage).replace("{reduction}", data.summary.responseTrend.match(/\d+/)?.[0] || "22").replace("{medical}", "88")), [data]);
+
+  useEffect(() => { if (!notice) return undefined; const timer = setTimeout(() => setNotice(""), 3200); return () => clearTimeout(timer); }, [notice]);
+
+  const exportReport = () => { const report = { range, summary: data.summary, selectedZone, generated: "Frontend demo report" }; const blob = new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = "resqgrid-analytics-report.json"; link.click(); URL.revokeObjectURL(url); setNotice("Analytics report exported."); };
+
+  return <div className="mx-auto max-w-[1680px] space-y-4"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-bold tracking-[0.2em] text-cyan-400">ANALYSIS / PERFORMANCE</p><h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-100">Response Analytics</h1><p className="mt-1 text-sm text-slate-500">Measure emergency response performance, resource utilisation and allocation efficiency.</p></div><div className="flex items-center gap-2"><span className="flex items-center gap-1.5 text-[10px] font-bold tracking-[0.12em] text-emerald-300"><i className="h-1.5 w-1.5 rounded-full bg-emerald-400" />SIMULATED DATA</span><button type="button" onClick={exportReport} className="flex items-center gap-2 rounded border border-slate-700 px-3 py-2 text-xs font-bold text-slate-300 hover:bg-slate-800"><Download size={14} /> EXPORT REPORT</button><button type="button" onClick={() => setNotice("Summary generated for the selected period.")} className="flex items-center gap-2 rounded bg-cyan-400 px-3 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-300"><FileText size={14} /> GENERATE SUMMARY</button></div></div><div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-800 bg-[#111b24] p-3"><div><p className="text-[10px] font-bold tracking-[0.16em] text-slate-500">ANALYTICS WINDOW</p><p className="mt-1 text-xs text-slate-400">Select a period to reframe the operational signal.</p></div><div className="flex gap-1 rounded border border-slate-700 bg-[#0d151c] p-1">{Object.keys(analyticsRanges).map((option) => <button type="button" key={option} onClick={() => setRange(option)} className={`rounded px-3 py-1.5 text-[10px] font-bold ${range === option ? "bg-cyan-400/15 text-cyan-200" : "text-slate-500 hover:text-slate-200"}`}>{option}</button>)}</div></div><AnalyticsSummary summary={data.summary} /><div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]"><ResponseTrend data={data.responseTrend} /><DemandCapacity data={data.demand} /></div><div className="grid gap-4 xl:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]"><ResourceUtilisation /><IncidentPerformance data={data.incident} /></div><ZonePerformance zones={data.zones} selectedZone={selectedZone} onSelect={setSelectedZone} /><div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]"><AIImpact impact={data.aiImpact} /><EfficiencyChart data={data.efficiency} /></div><div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"><KeyInsights insights={insights} /><section className="rounded-md border border-cyan-400/20 bg-[#111b24] p-4"><p className="text-[10px] font-bold tracking-[0.16em] text-cyan-400">SELECTED ZONE FOCUS</p><h2 className="mt-1 text-sm font-semibold text-slate-100">{selectedZone} operational readout</h2>{(() => { const zone = data.zones.find((item) => item.zone === selectedZone) || data.zones[0]; return <div className="mt-5 grid grid-cols-2 gap-4 text-xs"><span className="text-slate-500">Coverage<b className="mt-1 block text-lg text-cyan-300">{zone.coverage}%</b></span><span className="text-slate-500">Priority<b className="mt-1 block text-lg text-orange-300">{zone.priority}/100</b></span><span className="text-slate-500">Avg response<b className="mt-1 block text-lg text-slate-200">{zone.response} min</b></span><span className="text-slate-500">Resource gap<b className="mt-1 block text-lg text-red-300">{zone.gap}</b></span></div>; })()}</section></div>{notice && <div role="status" className="fixed bottom-5 right-5 z-1100 rounded border border-emerald-400/30 bg-[#10231f] px-4 py-3 text-xs text-emerald-200 shadow-xl">{notice}</div>}</div>;
+}
+
+export default Analytics;

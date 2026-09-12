@@ -1,0 +1,8 @@
+import { Activity, BrainCircuit, Database, Gauge, Play, RotateCw } from "lucide-react";
+
+function AllocationStatus({ isRunning, onRun, lastRun }) {
+  const items = [["AI ENGINE", "Operational", BrainCircuit, "text-emerald-300"], ["LAST OPTIMISATION", lastRun ? "Just now" : "32 seconds ago", RotateCw, "text-slate-300"], ["RESOURCES ANALYSED", "124", Database, "text-cyan-300"], ["ACTIVE INCIDENTS", "27", Activity, "text-orange-300"], ["ALLOCATION CONFIDENCE", "94%", Gauge, "text-cyan-300"]];
+  return <section className="rounded-md border border-slate-800 bg-[#111b24] p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-[10px] font-bold tracking-[0.18em] text-cyan-400">AI-ASSISTED OPTIMISATION</p><h2 className="mt-1 text-sm font-semibold text-slate-100">Allocation engine status</h2></div><button type="button" disabled={isRunning} onClick={onRun} className="flex items-center gap-2 rounded bg-cyan-400 px-3 py-2 text-xs font-bold text-slate-950 disabled:cursor-wait disabled:opacity-60"><Play size={14} />{isRunning ? "OPTIMISING..." : "RUN OPTIMISATION"}</button></div><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">{items.map(([label, value, Icon, tone]) => <div key={label} className="flex items-center gap-2 border-l border-slate-700 pl-3"><Icon size={15} className={tone} /><div><p className="text-[9px] font-bold tracking-[0.12em] text-slate-500">{label}</p><p className={`mt-1 text-xs font-semibold ${tone}`}>{value}</p></div></div>)}</div>{isRunning && <p className="mt-4 text-[10px] font-medium tracking-[0.08em] text-orange-300">Analysing demand... Evaluating resource availability... Calculating travel distance... Generating allocation...</p>}</section>;
+}
+
+export default AllocationStatus;
