@@ -1,0 +1,6 @@
+import { Layers3 } from "lucide-react";
+
+const items = [["incidents", "Incidents"], ["resources", "Resources"], ["zones", "Affected Zones"], ["hospitals", "Hospitals"], ["shelters", "Shelters"], ["reliefCenters", "Relief Centers"], ["roads", "Blocked Roads"], ["routes", "Deployment Routes"]];
+
+function MapLayers({ layers, onToggle, onShowAll, onHideAll }) { return <div className="absolute right-3 top-3 z-1000 w-48 rounded border border-slate-700/90 bg-[#0d151c]/95 p-3 shadow-xl"><div className="flex items-center gap-2 border-b border-slate-800 pb-2"><Layers3 size={14} className="text-cyan-300" /><p className="text-[10px] font-bold tracking-[0.16em] text-slate-200">MAP LAYERS</p></div><div className="mt-2 space-y-1">{items.map(([key, label]) => <label key={key} className="flex cursor-pointer items-center gap-2 py-1 text-[10px] text-slate-400 hover:text-slate-200"><input type="checkbox" checked={layers[key]} onChange={() => onToggle(key)} className="accent-cyan-400" />{label}</label>)}</div><div className="mt-2 flex gap-2 border-t border-slate-800 pt-2"><button type="button" onClick={onShowAll} className="text-[9px] font-bold text-cyan-300">SHOW ALL</button><button type="button" onClick={onHideAll} className="text-[9px] font-bold text-slate-500">HIDE ALL</button></div></div>; }
+export default MapLayers;

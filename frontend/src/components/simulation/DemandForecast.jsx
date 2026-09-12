@@ -1,0 +1,7 @@
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
+function DemandForecast({ data }) {
+  return <section className="rounded-md border border-slate-800 bg-[#111b24] p-4"><div className="flex items-center justify-between"><div><p className="text-[10px] font-bold tracking-[0.16em] text-cyan-400">PROJECTED RESOURCE DEMAND</p><h2 className="mt-1 text-sm font-semibold text-slate-100">Current versus simulated requirement</h2></div><span className="text-[10px] text-slate-500">Dynamic forecast</span></div><div className="mt-3 h-60"><ResponsiveContainer width="100%" height="100%"><BarChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}><CartesianGrid stroke="#24323d" vertical={false} /><XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 9 }} axisLine={false} tickLine={false} /><YAxis tick={{ fill: "#64748b", fontSize: 9 }} axisLine={false} tickLine={false} /><Tooltip contentStyle={{ background: "#0d151c", border: "1px solid #334155", borderRadius: 4, fontSize: 11 }} /><Legend wrapperStyle={{ color: "#94a3b8", fontSize: 10 }} /><Bar dataKey="current" name="Current demand" fill="#475569" radius={[2, 2, 0, 0]} /><Bar dataKey="simulated" name="Simulated demand" fill="#22d3ee" radius={[2, 2, 0, 0]} /></BarChart></ResponsiveContainer></div></section>;
+}
+
+export default DemandForecast;

@@ -1,0 +1,9 @@
+import { AlertTriangle, Users } from "lucide-react";
+
+const severityTone = { CRITICAL: "border-red-400/30 bg-red-400/10 text-red-300", HIGH: "border-orange-400/30 bg-orange-400/10 text-orange-300", MEDIUM: "border-amber-400/30 bg-amber-400/10 text-amber-300" };
+
+function IncidentDemand({ incidents, selectedIncident, onSelect }) {
+  return <section className="rounded-md border border-slate-800 bg-[#111b24] p-4"><div className="flex items-center justify-between"><div><p className="text-[10px] font-bold tracking-[0.16em] text-red-300">01 / INCIDENT DEMAND</p><h2 className="mt-1 text-sm font-semibold text-slate-100">Priority demand queue</h2></div><AlertTriangle size={17} className="text-orange-300" /></div><div className="mt-3 space-y-2">{incidents.map((incident) => <button type="button" key={incident.id} onClick={() => onSelect(incident)} className={`w-full rounded border p-3 text-left transition-colors ${selectedIncident?.id === incident.id ? "border-cyan-400/40 bg-cyan-400/6" : "border-slate-800 hover:border-slate-700 hover:bg-slate-800/30"}`}><div className="flex items-start justify-between gap-2"><div><p className="text-xs font-semibold text-slate-100">{incident.id}</p><p className="mt-1 text-[11px] text-slate-500">{incident.zone}</p></div><span className={`rounded border px-1.5 py-1 text-[9px] font-bold ${severityTone[incident.severity]}`}>{incident.severity}</span></div><div className="mt-3 flex items-center justify-between text-[10px]"><span className="flex items-center gap-1 text-slate-400"><Users size={12} />{incident.affected.toLocaleString()} affected</span><span className="font-bold text-orange-300">{incident.priority}/100</span></div><p className="mt-2 truncate text-[10px] text-slate-500">Required: {incident.required.join(" + ")}</p></button>)}</div></section>;
+}
+
+export default IncidentDemand;
