@@ -1,39 +1,40 @@
-# ResQAI Backend
+# @jridgewell/resolve-uri
 
-Backend for **ResQAI – AI-Powered Dynamic Emergency Resource Allocation System**, developed for **MUJ HackX 4.0**.
+> Resolve a URI relative to an optional base URI
 
-## About
+Resolve any combination of absolute URIs, protocol-realtive URIs, absolute paths, or relative paths.
 
-The backend handles disaster incidents, analyzes emergency reports, calculates incident priority, manages resources, and recommends suitable resources for different emergencies.
+## Installation
 
-It also supports dynamic disaster simulations such as resource failure, road blockage, hospital capacity changes, new emergencies, and resource reallocation.
+```sh
+npm install @jridgewell/resolve-uri
+```
 
-## Technologies
+## Usage
 
-- Python
-- FastAPI
-- SQLAlchemy
-- SQLite
-- Pydantic
+```typescript
+function resolve(input: string, base?: string): string;
+```
 
-## Main Features
+```js
+import resolve from '@jridgewell/resolve-uri';
 
-- AI-based emergency report analysis
-- Incident management
-- Emergency resource management
-- Hospital and shelter management
-- Priority calculation
-- Distance-based resource allocation
-- Resource deployment
-- Dynamic resource reallocation
-- Disaster condition simulation
-- Resource equity analysis
+resolve('foo', 'https://example.com'); // => 'https://example.com/foo'
+```
 
-## API Documentation
-
-The backend provides interactive Swagger API documentation through FastAPI.
-
-Run the server:
-
-```bash
-uvicorn main:app --reload
+| Input                 | Base                    | Resolution                     | Explanation                                                  |
+|-----------------------|-------------------------|--------------------------------|--------------------------------------------------------------|
+| `https://example.com` | _any_                   | `https://example.com/`         | Input is normalized only                                     |
+| `//example.com`       | `https://base.com/`     | `https://example.com/`         | Input inherits the base's protocol                           |
+| `//example.com`       | _rest_                  | `//example.com/`               | Input is normalized only                                     |
+| `/example`            | `https://base.com/`     | `https://base.com/example`     | Input inherits the base's origin                             |
+| `/example`            | `//base.com/`           | `//base.com/example`           | Input inherits the base's host and remains protocol relative |
+| `/example`            | _rest_                  | `/example`                     | Input is normalized only                                     |
+| `example`             | `https://base.com/dir/` | `https://base.com/dir/example` | Input is joined with the base                                |
+| `example`             | `https://base.com/file` | `https://base.com/example`     | Input is joined with the base without its file               |
+| `example`             | `//base.com/dir/`       | `//base.com/dir/example`       | Input is joined with the base's last directory               |
+| `example`             | `//base.com/file`       | `//base.com/example`           | Input is joined with the base without its file               |
+| `example`             | `/base/dir/`            | `/base/dir/example`            | Input is joined with the base's last directory               |
+| `example`             | `/base/file`            | `/base/example`                | Input is joined with the base without its file               |
+| `example`             | `base/dir/`             | `base/dir/example`             | Input is joined with the base's last directory               |
+| `example`             | `base/file`             | `base/example`                 | Input is joined with the base without its file               |
