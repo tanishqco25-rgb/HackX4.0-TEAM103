@@ -220,21 +220,4 @@ def seed_database():
 
         db.commit()
 
-        print("======================================")
-        print("ResQAI demo database initialized")
-        print("Hospitals :", db.query(models.Hospital).count())
-        print("Shelters  :", db.query(models.Shelter).count())
-        print("Resources :", db.query(models.Resource).count())
-        print("Incidents :", db.query(models.Incident).count())
-        print("======================================")
-
-
-    except Exception as e:
-
-        db.rollback()
-
-        print("Database seeding error:", e)
-
-    finally:
-
-        db.close()
+      
