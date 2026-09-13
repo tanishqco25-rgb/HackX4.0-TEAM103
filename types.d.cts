@@ -8,9 +8,3 @@ export type LoaderContext = {
     content: string | null | undefined;
     ignore: boolean | undefined;
 };
-export type SourceMapLoader = (file: string, ctx: LoaderContext) => SourceMapInput | null | undefined | void;
-export type Options = {
-    excludeContent?: boolean;
-    decodedMappings?: boolean;
-};
-//# sourceMappingURL=types.d.ts.map
